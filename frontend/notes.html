@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notes</title>
+  <link rel="stylesheet" href="css/notes.css">
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>takeNotes</h1>
+  <div>
+    <button onclick="goHome()">Home</button>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- Notes Container -->
+<div class="notes-container" id="notesList"></div>
+
+<!-- Floating Add Button -->
+<button class="add-btn" onclick="goToAddNote()">＋</button>
+<!-- Fullscreen Note Viewer -->
+<div id="viewModal" class="modal hidden">
+    <div class="modal-content large">
+  
+      <input type="text" id="editTitle">
+      <textarea id="editContent"></textarea>
+  
+      <div class="modal-actions">
+        <button onclick="updateNote()">Save Changes</button>
+        <button onclick="closeView()">Close</button>
+      </div>
+  
+    </div>
+  </div>
+
+<!-- Add Note Modal -->
+<div id="modal" class="modal hidden">
+  <div class="modal-content">
+    <input type="text" id="title" placeholder="Title">
+    <textarea id="content" placeholder="Write your note..."></textarea>
+    
+    <div class="modal-actions">
+      <button onclick="addNote()">Save</button>
+      <button onclick="toggleModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/notes.js"></script>
+</body>
+</html>

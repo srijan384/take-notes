@@ -37,3 +37,6 @@ app.use("/api", authRoutes);
 app.listen(5001, () => {
   console.log("Server running on port 5001");
 });
+
+const notesRoutes = require("./routes/notes");
+app.use("/api/notes", notesRoutes);
