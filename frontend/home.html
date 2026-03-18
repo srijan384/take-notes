@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+
+<div class="overlay">
+
+  <div class="dashboard">
+
+    <div class="header">
+      <h1 id="welcomeText">Welcome </h1>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <p id="userEmail"></p>
+
+    <div class="cards">
+
+      <div class="card" onclick="goToNotes()">
+        <h2>📝 My Notes</h2>
+        <p>Create, edit and manage your notes</p>
+      </div>
+
+      <div class="card">
+        <h2>📌 Quick Tips</h2>
+        <p>Stay organized and productive</p>
+      </div>
+
+      <div class="card">
+        <h2>⚡ Fast Access</h2>
+        <p>Everything at one place</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script src="js/home.js"></script>
+</body>
+</html>

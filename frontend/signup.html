@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup</title>
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <h1 class="title">TakeNotes</h1>
+<div class="container">
+  <h2 class="login-title">Create Account </h2>
+
+  <form id="signupForm">
+    <input type="text" id="firstName" placeholder="First Name" required>
+    <input type="text" id="lastName" placeholder="Last Name" required>
+    <input type="email" id="email" placeholder="Email Address" required>
+    <div class="password-box">
+        <input type="password" id="password" placeholder="Password" required>
+        <span onclick="togglePassword()">👁️</span>
+      </div>
+      
+      <!-- Success Popup -->
+      <div id="successPopup" class="popup hidden">
+        <div class="popup-content">
+          <div class="tick">✔</div>
+          <p>Account Created Successfully!</p>
+        </div>
+      </div>
+
+    <button type="submit">Register</button>
+  </form>
+
+  <p id="errorMsg"></p>
+
+  <div class="extra-links">
+    <a href="index.html">Back to Login</a>
+  </div>
+</div>
+
+<script src="js/signup.js"></script>
+</body>
+</html>

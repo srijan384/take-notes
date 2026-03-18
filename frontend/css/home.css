@@ -1,0 +1,76 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    height: 100vh;
+  
+    background: 
+      linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+      url("../assets/login_background.png") no-repeat center center/cover;
+  }
+  
+  /* Overlay */
+  .overlay {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Dashboard container */
+  .dashboard {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    padding: 40px;
+    border-radius: 16px;
+    width: 500px;
+    color: white;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  }
+  
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  #welcomeText {
+    margin: 0;
+  }
+  
+  /* Email */
+  #userEmail {
+    margin: 10px 0 20px;
+    color: rgba(255,255,255,0.7);
+  }
+  
+  /* Cards layout */
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* Individual card */
+  .card {
+    background: rgba(255,255,255,0.2);
+    padding: 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    background: rgba(255,255,255,0.3);
+  }
+  
+  /* Logout button */
+  .logout-btn {
+    padding: 8px 12px;
+    border: none;
+    background: red;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
