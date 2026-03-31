@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Note = require("../models/Note");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+// Initialize Gemini SDK
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 
 // ================= ADD NOTE =================
@@ -119,6 +123,82 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+
+// ================= SUMMARIZE NOTE =================
+router.post("/:id/summarize", async (req, res) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, message: "Note not found" });
+    }
+
+    // Cache hit - return existing summary
+    if (note.aiSummary) {
+      return res.json({ success: true, summary: note.aiSummary });
+    }
+
+    // Initialize the model
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    
+    // Call Gemini API
+    const prompt = `Provide a concise, bulleted summary of the following text:\n\n${note.content}`;
+    const result = await model.generateContent(prompt);
+    const summaryResponse = result.response.text();
+
+    // Save summary to database
+    note.aiSummary = summaryResponse;
+    await note.save();
+
+    return res.json({ success: true, summary: note.aiSummary });
+
+  } catch (err) {
+    console.error("Gemini API Error in /summarize:", err.message || err);
+    return res.status(500).json({ success: false, message: "Server error during summarization" });
+  }
+});
+
+// ================= CHAT WITH NOTE =================
+router.post("/:id/chat", async (req, res) => {
+  const { userMessage } = req.body;
+
+  if (!userMessage) {
+    return res.status(400).json({ success: false, message: "userMessage is required" });
+  }
+
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ success: false, message: "Note not found" });
+    }
+
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+    // Initialize an actual chat session with context prefix
+    const chat = model.startChat({
+      history: [
+        {
+          role: "user",
+          parts: [{ text: `You are a helpful tutor. Use the following note content to answer the user's questions. Note Content:\n\n${note.content}` }],
+        },
+        {
+          role: "model",
+          parts: [{ text: "Understood. I'm ready to answer any questions based on the provided note content." }],
+        },
+      ],
+    });
+
+    const result = await chat.sendMessage(userMessage);
+    const responseText = result.response.text();
+
+    return res.json({ success: true, aiResponse: responseText });
+
+  } catch (err) {
+    console.error("Gemini API Error in /chat:", err.message || err);
+    return res.status(500).json({ success: false, message: "Server error during chat" });
+  }
+});
 
 
 // ================= EXPORT =================

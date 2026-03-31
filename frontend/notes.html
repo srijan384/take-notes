@@ -28,6 +28,25 @@
       <input type="text" id="editTitle">
       <textarea id="editContent"></textarea>
   
+      <div class="ai-assist-section">
+        <button id="summarizeBtn" onclick="summarizeNote()">✨ Summarize</button>
+        <div id="summaryContainer" class="hidden">
+          <div id="summaryLoading" class="hidden">Generating summary...</div>
+          <div id="summaryContent"></div>
+        </div>
+        
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid #ddd;">
+        
+        <div class="chat-section">
+          <h4>💬 Chat with Note</h4>
+          <div id="chatLog" class="chat-log"></div>
+          <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Ask a question..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+            <button id="sendChatBtn" onclick="sendChatMessage()">Send</button>
+          </div>
+        </div>
+      </div>
+
       <div class="modal-actions">
         <button onclick="updateNote()">Save Changes</button>
         <button onclick="closeView()">Close</button>

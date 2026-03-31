@@ -35,6 +35,14 @@ function openNote(id, title, content) {
   document.getElementById("editTitle").value = title;
   document.getElementById("editContent").value = content;
 
+  // Reset AI Summary state whenever note is opened
+  document.getElementById("summaryContainer").classList.add("hidden");
+  document.getElementById("summaryContent").innerHTML = "";
+
+  // Reset AI Chat state
+  document.getElementById("chatLog").innerHTML = "";
+  document.getElementById("chatInput").value = "";
+
   document.getElementById("viewModal").classList.remove("hidden");
 }
 
@@ -66,6 +74,102 @@ function closeView() {
     loadNotes();
   }
 
+
+// Summarize Note (AI Feature)
+async function summarizeNote() {
+  if (!currentNoteId) return;
+
+  const summaryContainer = document.getElementById("summaryContainer");
+  const summaryLoading = document.getElementById("summaryLoading");
+  const summaryContent = document.getElementById("summaryContent");
+  const summarizeBtn = document.getElementById("summarizeBtn");
+
+  summaryContainer.classList.remove("hidden");
+  summaryLoading.classList.remove("hidden");
+  summaryContent.innerHTML = "";
+  summarizeBtn.disabled = true;
+
+  try {
+    const res = await fetch(`http://127.0.0.1:5001/api/notes/${currentNoteId}/summarize`, {
+      method: "POST"
+    });
+    const data = await res.json();
+
+    summaryLoading.classList.add("hidden");
+    summarizeBtn.disabled = false;
+
+    if (data.success) {
+      // Basic formatting for list items
+      const formattedHTML = data.summary
+        .replace(/\n\*/g, '<br/>•')
+        .replace(/\n-/g, '<br/>•')
+        .replace(/\n/g, '<br/>');
+        
+      summaryContent.innerHTML = `<strong>✨ AI Summary:</strong><br/>${formattedHTML}`;
+    } else {
+      summaryContent.innerHTML = `<span style="color:red">Error: ${data.message}</span>`;
+    }
+  } catch (err) {
+    summaryLoading.classList.add("hidden");
+    summarizeBtn.disabled = false;
+    summaryContent.innerHTML = `<span style="color:red">Failed to connect to AI service.</span>`;
+  }
+}
+
+// Chat with Note (AI Feature)
+async function sendChatMessage() {
+  if (!currentNoteId) return;
+
+  const chatInput = document.getElementById("chatInput");
+  const chatLog = document.getElementById("chatLog");
+  const sendChatBtn = document.getElementById("sendChatBtn");
+  
+  const userMessage = chatInput.value.trim();
+  if (!userMessage) return;
+
+  // Append User message
+  chatLog.innerHTML += `<div class="chat-bubble chat-user">${userMessage}</div>`;
+  chatInput.value = "";
+  sendChatBtn.disabled = true;
+
+  // Append Typing indicator
+  const typingId = "typing-" + Date.now();
+  chatLog.innerHTML += `<div id="${typingId}" class="chat-typing">AI is typing...</div>`;
+  chatLog.scrollTop = chatLog.scrollHeight;
+
+  try {
+    const res = await fetch(`http://127.0.0.1:5001/api/notes/${currentNoteId}/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userMessage })
+    });
+    const data = await res.json();
+    
+    // Remove typing indicator
+    const typingElement = document.getElementById(typingId);
+    if (typingElement) typingElement.remove();
+    
+    sendChatBtn.disabled = false;
+
+    if (data.success) {
+      const formattedHTML = data.aiResponse
+        .replace(/\n\*/g, '<br/>•')
+        .replace(/\n-/g, '<br/>•')
+        .replace(/\n/g, '<br/>');
+      chatLog.innerHTML += `<div class="chat-bubble chat-ai">${formattedHTML}</div>`;
+    } else {
+      chatLog.innerHTML += `<div class="chat-bubble chat-ai" style="color:red">Error: ${data.message}</div>`;
+    }
+    chatLog.scrollTop = chatLog.scrollHeight;
+  } catch (err) {
+    const typingElement = document.getElementById(typingId);
+    if (typingElement) typingElement.remove();
+    
+    sendChatBtn.disabled = false;
+    chatLog.innerHTML += `<div class="chat-bubble chat-ai" style="color:red">Failed to connect to AI service.</div>`;
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+}
 
 // Add Note
 async function addNote() {
